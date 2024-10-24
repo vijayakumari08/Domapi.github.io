@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .array-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+        .array-item {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            text-align: center;
+            line-height: 50px;
+            transition: background-color 0.3s;
+        }
+        .highlight {
+            background-color: red;
+            color: white;
+        }
+        .found {
+            background-color: green;
+            color: white;
+        }
+        .message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Array Visualization</h1>
+    <div>
+        Enter Array Item: <input type="number" id="arrayItem">
+        <button onclick="insertItem()">Insert</button>
+        <button onclick="deleteItem()">Delete</button>
+        <button onclick="findItem()">Find</button>
+        <button onclick="printArray()">Print</button>
+        
+    </div>
+    
+    <div class="array-container" id="arrayContainer">Array is empty</div>
+    <p id="message" class="message"></p>
+
+    <script>
+        const array = [];
+
+        function updateArrayDisplay() {
+            const arrayContainer = document.getElementById('arrayContainer');
+            arrayContainer.innerHTML = array.length ? '' : 'Array is empty'; 
+
+            array.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add('array-item');
+                div.innerText = item;
+                arrayContainer.appendChild(div);
+            });
+        }
+
+        function insertItem() {
+            const number = getInputValue();
+            if (number !== null) {
+                if (!array.includes(number)) {
+                    array.push(number);
+                    updateArrayDisplay();
+                    clearMessage();
+                } else {
+                    showMessage('Element already exists in the array!');
+                }
+            }
+        }
+
+        function deleteItem() {
+            const number = getInputValue();
+            if (number !== null) {
+                const index = array.indexOf(number);
+                if (index > -1) {
+                    highlightElement(index, 'Deleting this element...', true);
+                    setTimeout(() => {
+                        array.splice(index, 1);
+                        updateArrayDisplay();
+                    }, 1000);
+                } else {
+                    showMessage('Element not found!');
+                }
+            }
+        }
+
+        function findItem() {
+            const number = getInputValue();
+            if (number !== null) {
+                const index = array.indexOf(number);
+                if (index > -1) {
+                    highlightElement(index, 'Element found!', false);
+                } else {
+                    showMessage('Element not found!');
+                }
+            }
+        }
+
+        function printArray() {
+            console.log(array);
+                 alert('Array: ' + array.join(', '));
+
+        }
+
+       
+
+        function getInputValue() {
+            const input = document.getElementById('arrayItem');
+            const number = parseInt(input.value);
+            input.value = ''; 
+
+            if (isNaN(number)) {
+                alert('Please enter a valid number');
+                return null;
+            }
+            return number;
+        }
+
+        function highlightElement(index, message, isDelete) {
+            const arrayContainer = document.getElementById('arrayContainer');
+            const element = arrayContainer.children[index];
+            element.classList.add(isDelete ? 'highlight' : 'found');
+            showMessage(message);
+            setTimeout(() => {
+                element.classList.remove(isDelete ? 'highlight' : 'found');
+                clearMessage();
+            }, 1000);
+        }
+
+        function showMessage(msg) {
+            document.getElementById('message').innerText = msg;
+        }
+
+        function clearMessage() {
+            document.getElementById('message').innerText = '';
+        }
+    </script>
+</body>
+</html>
